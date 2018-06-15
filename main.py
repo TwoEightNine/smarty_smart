@@ -50,15 +50,23 @@ class EventStorage(db.Model):
         self.time_stamp = utils.get_time()
 
     def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
         return '%d: %s from %s at %s\n' % (
             self.id,
             self.event.ljust(20),
             self.ip.ljust(16),
             utils.get_ui_time(self.time_stamp)
         )
+
+    def __str__(self):
+        return json.dumps(self.as_ui_obj())
+
+    def as_ui_obj(self):
+        return {
+            'id': self.id,
+            'event': self.event,
+            'ip': self.ip,
+            'time_stamp': self.time_stamp
+        }
 
 
 def log_table():
@@ -85,6 +93,11 @@ def save_event(event):
     db.session.add(event)
     db.session.flush()
     db.session.commit()
+
+
+def assert_authorized(token):
+    if not is_token_valid(token):
+        abort(401)
 
 
 @app.errorhandler(Exception)
@@ -121,15 +134,24 @@ def get_seed():
     return utils.RESPONSE_FORMAT % utils.as_str(seed_val)
 
 
+@app.route("/getEvents", methods=['POST'])
+def get_events():
+    save_event('getEvents')
+    data = request.form
+    if TOKEN not in data:
+        return utils.get_extended_error_by_code(1, TOKEN)
+    assert_authorized(data[TOKEN])
+    events = [ev.as_ui_obj() for ev in EventStorage.query.all()]
+    return utils.RESPONSE_FORMAT % json.dumps(events)
+
+
 @app.route("/execute", methods=['POST'])
 def execute():
     save_event('execute')
     data = request.form
     if TOKEN not in data:
         return utils.get_extended_error_by_code(1, TOKEN)
-    token = data[TOKEN]
-    if not is_token_valid(token):
-        abort(401)
+    assert_authorized(data[TOKEN])
     return utils.RESPONSE_1
 
 
