@@ -1,0 +1,2 @@
+SEED = "seed"
+TOKEN = "token"
