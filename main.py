@@ -42,18 +42,21 @@ class EventStorage(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     event = db.Column('event', db.String(20))
     ip = db.Column('ip', db.String(16))
+    asserted = db.Column('asserted', db.Integer)
     time_stamp = db.Column('time_stamp', db.Integer)
 
-    def __init__(self, event, ip):
+    def __init__(self, event, ip, asserted):
         self.event = event
         self.ip = ip
+        self.asserted = asserted
         self.time_stamp = utils.get_time()
 
     def __repr__(self):
-        return '%d: %s from %s at %s\n' % (
+        return '%d: %s from %s (%s) at %s\n' % (
             self.id,
             self.event.ljust(20),
             self.ip.ljust(16),
+            'asserted  ' if self.asserted == 1 else 'unasserted',
             utils.get_ui_time(self.time_stamp)
         )
 
@@ -65,6 +68,7 @@ class EventStorage(db.Model):
             'id': self.id,
             'event': self.event,
             'ip': self.ip,
+            'asserted': self.asserted,
             'time_stamp': self.time_stamp
         }
 
@@ -88,15 +92,18 @@ def is_token_valid(token):
     return seed is not None and not seed.is_expired()
 
 
-def save_event(event):
-    event = EventStorage(event, request.remote_addr)
+def save_event(event, asserted):
+    event = EventStorage(event, request.remote_addr, 1 if asserted else 0)
     db.session.add(event)
     db.session.flush()
     db.session.commit()
 
 
-def assert_authorized(token):
-    if not is_token_valid(token):
+def assert_and_save(event):
+    data = request.form
+    asserted = TOKEN in data and is_token_valid(data[TOKEN])
+    save_event(event, asserted)
+    if not asserted:
         abort(401)
 
 
@@ -121,7 +128,7 @@ def error_handler(e):
 
 @app.route("/getSeed")
 def get_seed():
-    save_event('getSeed')
+    save_event('getSeed', 1)
     while True:
         seed_val = utils.get_random_seed()
         if SeedStorage.query.filter_by(seed=seed_val).count() == 0:
@@ -136,22 +143,14 @@ def get_seed():
 
 @app.route("/getEvents", methods=['POST'])
 def get_events():
-    save_event('getEvents')
-    data = request.form
-    if TOKEN not in data:
-        return utils.get_extended_error_by_code(1, TOKEN)
-    assert_authorized(data[TOKEN])
-    events = [ev.as_ui_obj() for ev in EventStorage.query.all()]
+    assert_and_save('getEvents')
+    events = [ev.as_ui_obj() for ev in EventStorage.query.order_by(EventStorage.time_stamp.desc()).limit(100).all()]
     return utils.RESPONSE_FORMAT % json.dumps(events)
 
 
 @app.route("/execute", methods=['POST'])
 def execute():
-    save_event('execute')
-    data = request.form
-    if TOKEN not in data:
-        return utils.get_extended_error_by_code(1, TOKEN)
-    assert_authorized(data[TOKEN])
+    assert_and_save('execute')
     return utils.RESPONSE_1
 
 

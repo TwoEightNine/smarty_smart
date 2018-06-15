@@ -16,7 +16,6 @@ RESPONSE_EMPTY_LIST = RESPONSE_FORMAT % '[]'
 SEED_ALPHABET = string.ascii_uppercase + string.ascii_lowercase + string.digits
 
 ERROR_DICTIONARY = {
-    1: "Missed parameter: %s",
     400: "Bad request",
     401: "Authorization required",
     403: "Forbidden",
@@ -60,6 +59,7 @@ def get_error_by_code(code):
 
 def get_extended_error_by_code(code, fmt_tuple):
     return ERROR_FORMAT % (code, ERROR_DICTIONARY[code] % fmt_tuple)
+
 
 def as_str(s):
     return '"%s"' % s
