@@ -21,20 +21,25 @@ db = SQLAlchemy(app)
 class SeedStorage(db.Model):
 
     seed = db.Column('seed', db.String(32), primary_key=True)
+    ip = db.Column('ip', db.String(16))
     time_stamp = db.Column('time_stamp', db.Integer)
 
-    def __init__(self, seed):
+    def __init__(self, seed, ip):
         self.seed = seed
+        self.ip = ip
         self.time_stamp = utils.get_time()
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return '[%s (%d)]' % (self.seed, self.time_stamp)
+        return '[%s %s (%s)]' % (self.seed, self.ip, utils.get_ui_time(self.time_stamp))
 
     def is_expired(self):
         return utils.get_time() - self.time_stamp > utils.SEED_EXPIRATION_TIME
+
+    def does_ip_match(self, ip):
+        return self.ip == ip
 
 
 class EventStorage(db.Model):
@@ -84,12 +89,19 @@ def log_table():
 def is_token_valid(token):
     try:
         seed_val = cry.decrypt(token)
-    except Exception as e:
+    except Exception:
         return False
     if not utils.does_seed_match_alphabet(seed_val):
         return False
     seed = SeedStorage.query.filter_by(seed=seed_val).first()
-    return seed is not None and not seed.is_expired()
+    if seed is None:
+        return False
+    expired = seed.is_expired()
+    matches_ip = seed.does_ip_match(request.remote_addr)
+    if expired:
+        db.session.delete(seed)
+        db.session.commit()
+    return not expired and matches_ip
 
 
 def save_event(event, asserted):
@@ -133,7 +145,7 @@ def get_seed():
         seed_val = utils.get_random_seed()
         if SeedStorage.query.filter_by(seed=seed_val).count() == 0:
             break
-    seed = SeedStorage(seed_val)
+    seed = SeedStorage(seed_val, request.remote_addr)
     print(cry.encrypt(seed_val))
     db.session.add(seed)
     db.session.flush()
