@@ -112,7 +112,7 @@ def save_event(event, asserted):
 
 
 def assert_and_save(event):
-    data = request.form
+    data = request.headers
     asserted = TOKEN in data and is_token_valid(data[TOKEN])
     save_event(event, asserted)
     if not asserted:
