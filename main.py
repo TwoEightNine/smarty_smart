@@ -7,7 +7,7 @@ import os
 import cry
 from keys import *
 
-HOST = 'localhost'
+HOST = '0.0.0.0'
 PORT = 1753
 
 app = Flask(__name__)
@@ -47,7 +47,7 @@ class EventStorage(db.Model):
     id = db.Column('id', db.Integer, primary_key=True)
     event = db.Column('event', db.String(20))
     ip = db.Column('ip', db.String(16))
-    asserted = db.Column('asserted', db.Integer)
+    asserted = db.Column('asserted', db.Boolean)
     time_stamp = db.Column('time_stamp', db.Integer)
 
     def __init__(self, event, ip, asserted):
@@ -61,7 +61,7 @@ class EventStorage(db.Model):
             self.id,
             self.event.ljust(20),
             self.ip.ljust(16),
-            'asserted  ' if self.asserted == 1 else 'unasserted',
+            'asserted  ' if self.asserted else 'unasserted',
             utils.get_ui_time(self.time_stamp)
         )
 
@@ -105,7 +105,7 @@ def is_token_valid(token):
 
 
 def save_event(event, asserted):
-    event = EventStorage(event, request.remote_addr, 1 if asserted else 0)
+    event = EventStorage(event, request.remote_addr, asserted)
     db.session.add(event)
     db.session.flush()
     db.session.commit()

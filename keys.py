@@ -1,2 +1,2 @@
 SEED = "seed"
-TOKEN = "token"
+TOKEN = "Auth"
