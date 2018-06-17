@@ -177,7 +177,6 @@ def execute():
             abort(400)
         else:
             params.append(data[param])
-    print(params)
     return utils.RESPONSE_1
 
 
