@@ -5,7 +5,6 @@ import hashlib
 import json
 import re
 
-MAX_USERS = 1000000000
 SEED_EXPIRATION_TIME = 7200
 
 ERROR_FORMAT = '{"error": %d, "message": "%s"}'

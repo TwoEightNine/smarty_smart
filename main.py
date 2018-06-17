@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import cry
+import actions
 from keys import *
 
 HOST = '0.0.0.0'
@@ -153,17 +154,37 @@ def get_seed():
     return utils.RESPONSE_FORMAT % utils.as_str(seed_val)
 
 
-@app.route("/getEvents", methods=['POST'])
+@app.route("/getEvents")
 def get_events():
     assert_and_save('getEvents')
-    events = [ev.as_ui_obj() for ev in EventStorage.query.order_by(EventStorage.time_stamp.desc()).limit(100).all()]
+    events = [ev.as_ui_obj() for ev in EventStorage.query.order_by(EventStorage.id.desc()).limit(100).all()]
     return utils.RESPONSE_FORMAT % json.dumps(events)
 
 
 @app.route("/execute", methods=['POST'])
 def execute():
-    assert_and_save('execute')
+    data = request.form
+    if ACTION not in data:
+        abort(400)
+    action = data[ACTION]
+    assert_and_save('execute?' + action)
+    action = actions.get_action(action)
+    if action is None:
+        abort(400)
+    params = []
+    for param in action["params"]:
+        if param not in data:
+            abort(400)
+        else:
+            params.append(data[param])
+    print(params)
     return utils.RESPONSE_1
+
+
+@app.route("/supportedActions")
+def get_supported_actions():
+    assert_and_save("supportedActions")
+    return utils.RESPONSE_FORMAT % json.dumps(actions.supported_actions)
 
 
 log_table()
