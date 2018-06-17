@@ -186,6 +186,15 @@ def get_supported_actions():
     return utils.RESPONSE_FORMAT % json.dumps(actions.supported_actions)
 
 
+@app.route("/getState")
+def get_state():
+    assert_and_save("getState")
+    state = {
+        "temp": 22.7
+    }
+    return utils.RESPONSE_FORMAT % json.dumps(state)
+
+
 log_table()
 
 if __name__ == "__main__":
