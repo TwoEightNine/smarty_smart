@@ -6,6 +6,7 @@ import logging
 import os
 import cry
 import actions
+import controller
 from keys import *
 
 HOST = '0.0.0.0'
@@ -17,6 +18,7 @@ db_uri = 'sqlite:///%s' % db_path
 app.config.from_pyfile('app.cfg')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
+ctrl = controller.Controller()
 
 
 class SeedStorage(db.Model):
@@ -34,7 +36,7 @@ class SeedStorage(db.Model):
         return self.__str__()
 
     def __str__(self):
-        return '[%s %s (%s)]' % (self.seed, self.ip, utils.get_ui_time(self.time_stamp))
+        return '[%s %s (%s)]\n' % (self.seed, self.ip, utils.get_ui_time(self.time_stamp))
 
     def is_expired(self):
         return utils.get_time() - self.time_stamp > utils.SEED_EXPIRATION_TIME
@@ -82,7 +84,7 @@ class EventStorage(db.Model):
 def log_table():
     try:
         print(SeedStorage.query.all())
-        print(EventStorage.query.all())
+        print(EventStorage.query.limit(50).all())
     except Exception as e:
         print(e)
 
@@ -180,9 +182,9 @@ def execute():
     return utils.RESPONSE_1
 
 
-@app.route("/supportedActions")
+@app.route("/getActions")
 def get_supported_actions():
-    assert_and_save("supportedActions")
+    assert_and_save("getActions")
     return utils.RESPONSE_FORMAT % json.dumps(actions.supported_actions)
 
 
@@ -190,7 +192,9 @@ def get_supported_actions():
 def get_state():
     assert_and_save("getState")
     state = {
-        "temp": 22.7
+        "air_temp": ctrl.get_air_temp(),
+        "water_temp": ctrl.get_water_temp(),
+        "water_fullness": ctrl.get_water_fullness()
     }
     return utils.RESPONSE_FORMAT % json.dumps(state)
 
