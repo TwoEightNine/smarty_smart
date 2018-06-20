@@ -194,7 +194,9 @@ def get_state():
     state = {
         "air_temp": ctrl.get_air_temp(),
         "water_temp": ctrl.get_water_temp(),
-        "water_fullness": ctrl.get_water_fullness()
+        "water_fullness": ctrl.get_water_fullness(),
+        "teapot": ctrl.is_teapot_on(),
+        "light": ctrl.is_light_on()
     }
     return utils.RESPONSE_FORMAT % json.dumps(state)
 

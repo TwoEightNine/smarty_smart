@@ -15,5 +15,11 @@ class Controller:
     def get_water_fullness(self):
         return 80
 
+    def is_teapot_on(self):
+        return True
+
+    def is_light_on(self):
+        return False
+
     def set_led(self, color):
         pass

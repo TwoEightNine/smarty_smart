@@ -21,11 +21,40 @@ class Action:
 
 
 supported_actions = [
-        Action("Teapot", "tea", "http://carnivalmunchies.com/wp-content/uploads/2015/09/tea.jpg", []).as_ui_obj(),
-        Action("Light", "light", "https://cdn.guidingtech.com/media/assets/WordPress-Import/2016/07/shutterstock_417763918.png", []).as_ui_obj(),
-        Action("LED", "led", "https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg", ["color"]).as_ui_obj(),
-        Action("Parrot", "parrot", "https://t2.ea.ltmcdn.com/en/images/4/1/0/img_names_of_famous_parrots_14_paso_1_600.jpg", []).as_ui_obj(),
-        Action("Fuck You", "fy", "https://i.imgur.com/O54cqIc.jpg", []).as_ui_obj()
+        Action(
+            "Teapot",
+            "tea",
+            "http://carnivalmunchies.com/wp-content/uploads/2015/09/tea.jpg",
+            []
+        ).as_ui_obj(),
+
+        Action(
+            "Light",
+            "light",
+            "https://cdn.guidingtech.com/media/assets/WordPress-Import/2016/07/shutterstock_417763918.png",
+            []
+        ).as_ui_obj(),
+
+        Action(
+            "LED",
+            "led",
+            "https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg",
+            ["color"]
+        ).as_ui_obj(),
+
+        Action(
+            "Parrot",
+            "parrot",
+            "https://t2.ea.ltmcdn.com/en/images/4/1/0/img_names_of_famous_parrots_14_paso_1_600.jpg",
+            []
+        ).as_ui_obj(),
+
+        Action(
+            "Fuck You",
+            "fy",
+            "https://i.imgur.com/O54cqIc.jpg",
+            []
+        ).as_ui_obj()
     ]
 
 

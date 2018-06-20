@@ -15,12 +15,12 @@ RESPONSE_EMPTY_LIST = RESPONSE_FORMAT % '[]'
 SEED_ALPHABET = string.ascii_uppercase + string.ascii_lowercase + string.digits
 
 ERROR_DICTIONARY = {
-    400: "Bad request",
+    400: "The request has been performed mistakenly",
     401: "Authorization required",
-    403: "Forbidden",
-    404: "Not found",
-    405: "Method not allowed",
-    500: "Internal server error"
+    403: "Requested resourced cannot be provided",
+    404: "Requested resources cannot be found",
+    405: "The request has been executed mistakenly",
+    500: "The server cannot process the request due to an internal problem"
 }
 
 
