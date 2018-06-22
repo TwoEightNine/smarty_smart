@@ -7,6 +7,7 @@ import os
 import cry
 import actions
 import controller
+import fcm
 from keys import *
 
 HOST = '0.0.0.0'
@@ -19,6 +20,7 @@ app.config.from_pyfile('app.cfg')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 ctrl = controller.Controller()
+push = fcm.FCM()
 
 
 class SeedStorage(db.Model):
@@ -174,18 +176,21 @@ def execute():
     if action is None:
         abort(400)
     params = []
-    for param in action["params"]:
+    for param in action.params:
         if param not in data:
             abort(400)
         else:
             params.append(data[param])
+    if action.action == "test":
+        push.send_message("Smarty says", "Test message " + utils.get_ui_time(utils.get_time()))
     return utils.RESPONSE_1
 
 
 @app.route("/getActions")
 def get_supported_actions():
     assert_and_save("getActions")
-    return utils.RESPONSE_FORMAT % json.dumps(actions.supported_actions)
+    result = [ac.as_ui_obj() for ac in actions.supported_actions]
+    return utils.RESPONSE_FORMAT % json.dumps(result)
 
 
 @app.route("/getState")
@@ -199,6 +204,16 @@ def get_state():
         "light": ctrl.is_light_on()
     }
     return utils.RESPONSE_FORMAT % json.dumps(state)
+
+
+@app.route("/registerToken", methods=["POST"])
+def register_token():
+    assert_and_save("registerToken")
+    if FCM_TOKEN not in request.form:
+        abort(400)
+    fcm_token = request.form[FCM_TOKEN]
+    push.add_token(fcm_token)
+    return utils.RESPONSE_1
 
 
 log_table()
