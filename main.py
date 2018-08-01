@@ -10,6 +10,7 @@ import controller
 import fcm
 from keys import *
 
+PUSH_TITLE = "Smarty says"
 HOST = '0.0.0.0'
 PORT = 1753
 
@@ -181,8 +182,8 @@ def execute():
             abort(400)
         else:
             params.append(data[param])
-    if action.action == "test":
-        push.send_message("Smarty says", "Test message " + utils.get_ui_time(utils.get_time()))
+    if action.action == actions.TEST:
+        execute_test()
     return utils.RESPONSE_1
 
 
@@ -214,6 +215,10 @@ def register_token():
     fcm_token = request.form[FCM_TOKEN]
     push.add_token(fcm_token)
     return utils.RESPONSE_1
+
+
+def execute_test():
+    push.send_message(PUSH_TITLE, "Test message " + utils.get_ui_time(utils.get_time()))
 
 
 log_table()

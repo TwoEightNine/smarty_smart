@@ -1,3 +1,13 @@
+
+TEA = "tea"
+LIGHT = "light"
+LED = "led"
+LED_COLOR = "color"
+PARROT = "parrot"
+FUCK_YOU = "fy"
+TEST = "test"
+
+
 class Action:
     name = ""
     action = ""
@@ -22,42 +32,42 @@ class Action:
 supported_actions = [
     Action(
         "Teapot",
-        "tea",
+        TEA,
         "http://carnivalmunchies.com/wp-content/uploads/2015/09/tea.jpg",
         []
     ),
 
     Action(
         "Light",
-        "light",
+        LIGHT,
         "https://cdn.guidingtech.com/media/assets/WordPress-Import/2016/07/shutterstock_417763918.png",
         []
     ),
 
     Action(
         "LED",
-        "led",
+        LED,
         "https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg",
-        ["color"]
+        [LED_COLOR]
     ),
 
     Action(
         "Parrot",
-        "parrot",
+        PARROT,
         "https://t2.ea.ltmcdn.com/en/images/4/1/0/img_names_of_famous_parrots_14_paso_1_600.jpg",
         []
     ),
 
     Action(
         "Fuck You",
-        "fy",
+        FUCK_YOU,
         "https://i.imgur.com/O54cqIc.jpg",
         []
     ),
 
     Action(
         "Test",
-        "test",
+        TEST,
         "https://www.webdevelopersnotes.com/wp-content/uploads/new-email-notification-sound-alert.png",
         []
     )
