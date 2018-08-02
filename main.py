@@ -184,6 +184,12 @@ def execute():
             params.append(data[param])
     if action.action == actions.TEST:
         execute_test()
+    elif action.action == actions.TEA:
+        ctrl.turn_on_teapot()
+    elif action.action == actions.LIGHT:
+        ctrl.toggle_light()
+    elif action.action == actions.LED:
+        ctrl.set_led(data[action.params[0]])
     return utils.RESPONSE_1
 
 
@@ -202,7 +208,8 @@ def get_state():
         "water_temp": ctrl.get_water_temp(),
         "water_fullness": ctrl.get_water_fullness(),
         "teapot": ctrl.is_teapot_on(),
-        "light": ctrl.is_light_on()
+        "light": ctrl.is_light_on(),
+        "led": ctrl.get_led_color()
     }
     return utils.RESPONSE_FORMAT % json.dumps(state)
 
