@@ -1,4 +1,4 @@
-from gpiozero import DigitalOutputDevice, RGBLED
+# from gpiozero import DigitalOutputDevice, RGBLED
 import threading
 import utils
 import ds18b20
@@ -103,8 +103,16 @@ class Controller:
 #     def get_led_color(self):
 #         return self.__led
 #
-#     def turn_on_teapot(self):
-#         self.__tea = not self.__tea
+#     def turn_on_teapot(self, on_boil):
+#         self.__tea = True
+#         threading.Thread(target=self.__boiling, args=(on_boil, )).start()
 #
 #     def toggle_light(self):
 #         self.__light = not self.__light
+#
+#     def __boiling(self, on_boil):
+#         start_time = utils.get_time()
+#         while utils.get_time() - start_time < 10:
+#             utils.sleep(1)
+#         self.__tea = False
+#         on_boil()

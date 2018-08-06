@@ -10,7 +10,7 @@ import controller
 import fcm
 from keys import *
 
-PUSH_TITLE = "Smarty says"
+PUSH_TITLE = "says Smarty"
 HOST = '0.0.0.0'
 PORT = 1753
 
@@ -185,7 +185,7 @@ def execute():
     if action.action == actions.TEST:
         execute_test()
     elif action.action == actions.TEA:
-        ctrl.turn_on_teapot(lambda _: push.send_message(PUSH_TITLE, "Teapot is done!"))
+        ctrl.turn_on_teapot(lambda: push.send_message(PUSH_TITLE, "Teapot is done!"))
     elif action.action == actions.LIGHT:
         ctrl.toggle_light()
     elif action.action == actions.LED:
