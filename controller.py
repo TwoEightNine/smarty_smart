@@ -1,4 +1,4 @@
-# from gpiozero import DigitalOutputDevice, RGBLED
+from gpiozero import DigitalOutputDevice, RGBLED
 import threading
 import utils
 import ds18b20
