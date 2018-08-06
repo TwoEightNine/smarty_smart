@@ -1,4 +1,6 @@
 from gpiozero import DigitalOutputDevice, RGBLED
+import threading
+import utils
 import ds18b20
 
 PIN_TEAPOT = 6
@@ -22,7 +24,6 @@ class Controller:
         # self.__temp_teapot = ds18b20.DS18B20()
         # self.__temp_air = ds18b20.DS18B20()
         self.__led = RGBLED(PIN_LED_R, PIN_LED_G, PIN_LED_B)
-        pass
 
     def get_air_temp(self):
         return 22.1  # self.__temp_air.get_temp()
@@ -52,11 +53,21 @@ class Controller:
                + hex(int(color[1] * 255))[2:] \
                + hex(int(color[2] * 255))[2:]
 
-    def turn_on_teapot(self):
+    def turn_on_teapot(self, on_boil):
         self.__teapot.on()
+        threading.Thread(target=self.__wait_until_boil, args=(on_boil,)).start()
 
     def toggle_light(self):
         self.__light.toggle()
+
+    def __wait_until_boil(self, on_boil):
+        temp = self.get_water_temp()
+        while temp < 99:
+            utils.sleep(5)
+            temp = self.get_water_temp()
+            print("Teapot's temp = " + str(temp))
+        self.__teapot.off()
+        on_boil()
 
 
 # stub for running

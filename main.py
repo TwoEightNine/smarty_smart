@@ -185,7 +185,7 @@ def execute():
     if action.action == actions.TEST:
         execute_test()
     elif action.action == actions.TEA:
-        ctrl.turn_on_teapot()
+        ctrl.turn_on_teapot(lambda _: push.send_message(PUSH_TITLE, "Teapot is done!"))
     elif action.action == actions.LIGHT:
         ctrl.toggle_light()
     elif action.action == actions.LED:
