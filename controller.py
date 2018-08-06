@@ -19,7 +19,7 @@ class Controller:
     __led = None
 
     def __init__(self):
-        self.__teapot = DigitalOutputDevice(PIN_TEAPOT)
+        self.__teapot = DigitalOutputDevice(PIN_TEAPOT, active_high=False)
         self.__light = DigitalOutputDevice(PIN_LIGHT, active_high=False)
         # self.__temp_teapot = ds18b20.DS18B20()
         # self.__temp_air = ds18b20.DS18B20()
