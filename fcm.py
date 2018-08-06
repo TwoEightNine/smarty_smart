@@ -19,7 +19,9 @@ class FCM:
             with open(TOKEN_FILE, "wb") as f:
                 f.write(bytes("[]".encode("utf-8")))
 
-    def send_message(self, title, message, params={}):
+    def send_message(self, title, message, params=None):
+        if params is None:
+            params = {}
         data_message = {
             "title": title,
             "message": message
