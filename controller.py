@@ -5,6 +5,8 @@ import ds18b20
 
 PIN_TEAPOT = 6
 PIN_LIGHT = 14
+PIN_RGB = 18
+PIN_AMP = 23
 PIN_LED_R = 13
 PIN_LED_G = 7
 PIN_LED_B = 15
@@ -14,6 +16,8 @@ class Controller:
 
     __teapot = None
     __light = None
+    __rgb = None
+    __amp = None
     __temp_teapot = None
     __temp_air = None
     __led = None
@@ -21,6 +25,8 @@ class Controller:
     def __init__(self):
         self.__teapot = DigitalOutputDevice(PIN_TEAPOT, active_high=False)
         self.__light = DigitalOutputDevice(PIN_LIGHT, active_high=False)
+        self.__rgb = DigitalOutputDevice(PIN_RGB, active_high=False)
+        self.__amp = DigitalOutputDevice(PIN_AMP, active_high=False)
         # self.__temp_teapot = ds18b20.DS18B20()
         # self.__temp_air = ds18b20.DS18B20()
         self.__led = RGBLED(PIN_LED_R, PIN_LED_G, PIN_LED_B)
@@ -39,6 +45,12 @@ class Controller:
 
     def is_light_on(self):
         return self.__light.value
+
+    def is_rgb_on(self):
+        return self.__rgb.value
+
+    def is_amp_on(self):
+        return self.__amp.value
 
     def set_led(self, color):
         self.__led.color = (
@@ -59,6 +71,12 @@ class Controller:
 
     def toggle_light(self):
         self.__light.toggle()
+
+    def toggle_rgb(self):
+        self.__rgb.toggle()
+
+    def toggle_amp(self):
+        self.__amp.toggle()
 
     def __wait_until_boil(self, on_boil):
         temp = self.get_water_temp()

@@ -184,12 +184,16 @@ def execute():
             params.append(data[param])
     if action.action == actions.TEST:
         execute_test()
-    elif action.action == actions.TEA:
-        ctrl.turn_on_teapot(lambda: push.send_message(PUSH_TITLE, "Teapot is done!"))
+    # elif action.action == actions.TEA:
+    #     ctrl.turn_on_teapot(lambda: push.send_message(PUSH_TITLE, "Teapot is done!"))
     elif action.action == actions.LIGHT:
         ctrl.toggle_light()
-    elif action.action == actions.LED:
-        ctrl.set_led(data[action.params[0]])
+    elif action.action == actions.RGB:
+        ctrl.toggle_rgb()
+    elif action.action == actions.AMPLIFIER:
+        ctrl.toggle_amp()
+    # elif action.action == actions.LED:
+    #     ctrl.set_led(data[action.params[0]])
     return utils.RESPONSE_1
 
 
@@ -204,12 +208,14 @@ def get_supported_actions():
 def get_state():
     assert_and_save("getState")
     state = {
-        "air_temp": ctrl.get_air_temp(),
-        "water_temp": ctrl.get_water_temp(),
-        "water_fullness": ctrl.get_water_fullness(),
-        "teapot": ctrl.is_teapot_on(),
+        # "air_temp": ctrl.get_air_temp(),
+        # "water_temp": ctrl.get_water_temp(),
+        # "water_fullness": ctrl.get_water_fullness(),
+        # "teapot": ctrl.is_teapot_on(),
         "light": ctrl.is_light_on(),
-        "led": ctrl.get_led_color()
+        "rgb": ctrl.is_rgb_on(),
+        "amp": ctrl.is_amp_on(),
+        # "led": ctrl.get_led_color()
     }
     return utils.RESPONSE_FORMAT % json.dumps(state)
 

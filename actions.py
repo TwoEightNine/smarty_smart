@@ -6,6 +6,8 @@ LED_COLOR = "color"
 PARROT = "parrot"
 FUCK_YOU = "fy"
 TEST = "test"
+RGB = "rgb"
+AMPLIFIER = "amp"
 
 
 class Action:
@@ -30,12 +32,12 @@ class Action:
 
 
 supported_actions = [
-    Action(
-        "Teapot",
-        TEA,
-        "http://carnivalmunchies.com/wp-content/uploads/2015/09/tea.jpg",
-        []
-    ),
+    # Action(
+    #     "Teapot",
+    #     TEA,
+    #     "http://carnivalmunchies.com/wp-content/uploads/2015/09/tea.jpg",
+    #     []
+    # ),
 
     Action(
         "Light",
@@ -44,24 +46,38 @@ supported_actions = [
         []
     ),
 
-    Action(
-        "LED",
-        LED,
-        "https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg",
-        [LED_COLOR]
-    ),
+    # Action(
+    #     "LED",
+    #     LED,
+    #     "https://upload.wikimedia.org/wikipedia/commons/c/cb/RBG-LED.jpg",
+    #     [LED_COLOR]
+    # ),
+    #
+    # Action(
+    #     "Parrot",
+    #     PARROT,
+    #     "https://t2.ea.ltmcdn.com/en/images/4/1/0/img_names_of_famous_parrots_14_paso_1_600.jpg",
+    #     []
+    # ),
+    #
+    # Action(
+    #     "Fuck You",
+    #     FUCK_YOU,
+    #     "https://i.imgur.com/O54cqIc.jpg",
+    #     []
+    # ),
 
     Action(
-        "Parrot",
-        PARROT,
-        "https://t2.ea.ltmcdn.com/en/images/4/1/0/img_names_of_famous_parrots_14_paso_1_600.jpg",
+        "RGB",
+        RGB,
+        "https://sep.yimg.com/ay/yhst-135552442550403/24v-rgb-led-polar-2-neon-flex-65-1.jpg",
         []
     ),
 
     Action(
-        "Fuck You",
-        FUCK_YOU,
-        "https://i.imgur.com/O54cqIc.jpg",
+        "Amplifier",
+        AMPLIFIER,
+        "https://cdn.pixabay.com/photo/2016/03/31/15/24/audio-1293262_960_720.png",
         []
     ),
 
