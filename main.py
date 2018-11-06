@@ -8,6 +8,7 @@ import cry
 import actions
 import controller
 import fcm
+import feature
 from keys import *
 
 PUSH_TITLE = "says Smarty"
@@ -173,51 +174,29 @@ def execute():
         abort(400)
     action = data[ACTION]
     assert_and_save('execute?' + action)
-    action = actions.get_action(action)
-    if action is None:
+    feat = feature.get_feature(action, feature.build_features(ctrl))
+    if feat is None:
         abort(400)
     params = []
-    for param in action.params:
+    for param in feat.params:
         if param not in data:
             abort(400)
         else:
             params.append(data[param])
-    if action.action == actions.TEST:
-        execute_test()
-    # elif action.action == actions.TEA:
-    #     ctrl.turn_on_teapot(lambda: push.send_message(PUSH_TITLE, "Teapot is done!"))
-    elif action.action == actions.LIGHT:
+    if feat.action == feature.Action.LIGHT:
         ctrl.toggle_light()
-    elif action.action == actions.RGB:
+    elif feat.action == feature.Action.RGB:
         ctrl.toggle_rgb()
-    elif action.action == actions.AMPLIFIER:
+    elif feat.action == feature.Action.AMPLIFIER:
         ctrl.toggle_amp()
-    # elif action.action == actions.LED:
-    #     ctrl.set_led(data[action.params[0]])
     return utils.RESPONSE_1
 
 
-@app.route("/getActions")
-def get_supported_actions():
-    assert_and_save("getActions")
-    result = [ac.as_ui_obj() for ac in actions.supported_actions]
+@app.route("/getFeatures")
+def get_features():
+    assert_and_save("getFeatures")
+    result = [feat.as_ui_obj() for feat in feature.build_features(ctrl)]
     return utils.RESPONSE_FORMAT % json.dumps(result)
-
-
-@app.route("/getState")
-def get_state():
-    assert_and_save("getState")
-    state = {
-        # "air_temp": ctrl.get_air_temp(),
-        # "water_temp": ctrl.get_water_temp(),
-        # "water_fullness": ctrl.get_water_fullness(),
-        # "teapot": ctrl.is_teapot_on(),
-        "light": ctrl.is_light_on(),
-        "rgb": ctrl.is_rgb_on(),
-        "amp": ctrl.is_amp_on(),
-        # "led": ctrl.get_led_color()
-    }
-    return utils.RESPONSE_FORMAT % json.dumps(state)
 
 
 @app.route("/registerToken", methods=["POST"])
