@@ -28,11 +28,11 @@ class Controller:
         self.__rgb = DigitalOutputDevice(PIN_RGB, active_high=False)
         self.__amp = DigitalOutputDevice(PIN_AMP, active_high=False)
         # self.__temp_teapot = ds18b20.DS18B20()
-        # self.__temp_air = ds18b20.DS18B20()
+        self.__temp_air = ds18b20.DS18B20()
         self.__led = RGBLED(PIN_LED_R, PIN_LED_G, PIN_LED_B)
 
     def get_air_temp(self):
-        return 22.1  # self.__temp_air.get_temp()
+        return self.__temp_air.get_temp()
 
     def get_water_temp(self):
         return 70.1  # self.__temp_teapot.get_temp()
