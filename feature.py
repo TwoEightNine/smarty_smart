@@ -69,6 +69,7 @@ def on_off(value):
 
 def get_feature(action, features):
     for feature in features:
-        if feature.action.value == action:
+        if feature.action is not None and \
+                feature.action.value == action:
             return feature
     return None
