@@ -7,22 +7,14 @@ class Action(Enum):
     AMPLIFIER = "amp"
 
 
-class Type(Enum):
-    SWITCH = "switch"
-    STATE = "state"
-    SETTER = "setter"
-
-
 class Feature:
 
-    type = ""
     name = ""
     action = None
     params = None
-    value = False
+    value = ""
 
-    def __init__(self, type, name, value, action=None, params=None):
-        self.type = type
+    def __init__(self, name, value, action=None, params=None):
         self.name = name
         self.value = value
         self.action = action
@@ -30,7 +22,6 @@ class Feature:
 
     def as_ui_obj(self):
         result = dict()
-        result["type"] = self.type.value
         result["name"] = self.name
         result["value"] = self.value
         if self.action is not None:
@@ -44,24 +35,25 @@ def build_features(ctrl):
     return [
         # switches
         Feature(
-            Type.SWITCH,
             "Light",
-            ctrl.is_light_on(),
+            on_off(ctrl.is_light_on()),
             Action.LIGHT
         ),
         Feature(
-            Type.SWITCH,
             "RGB",
-            ctrl.is_rgb_on(),
+            on_off(ctrl.is_rgb_on()),
             Action.RGB
         ),
         Feature(
-            Type.SWITCH,
             "Amplifier",
-            ctrl.is_amp_on(),
+            on_off(ctrl.is_amp_on()),
             Action.AMPLIFIER
         )
     ]
+
+
+def on_off(value):
+    return "ON" if value else "OFF"
 
 
 def get_feature(action, features):
