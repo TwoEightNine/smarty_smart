@@ -31,3 +31,7 @@ class DS18B20:
             temp_string = lines[1][equals_pos + 2:]
             temp_c = float(temp_string) / 1000.0
             return temp_c
+
+    def get_ui_temp(self):
+        return "%.1f" % self.get_temp()
+

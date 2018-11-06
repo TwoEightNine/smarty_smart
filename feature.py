@@ -39,8 +39,8 @@ def build_features(ctrl):
     return [
         Feature(
             "Air temp, °C",
-            str(ctrl.get_air_temp()),
-            thumb="http://www.cray.com/blog/wp-content/uploads/2015/09/Weather-Blog-Image.jpg"
+            ctrl.get_air_temp(),
+            thumb="https://www.the-connaught.co.uk/SysSiteAssets/rooms--suites/superior-queen-single-room/superior-queen-room---teaser.jpg"
         ),
         Feature(
             "Light",

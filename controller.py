@@ -32,7 +32,7 @@ class Controller:
         self.__led = RGBLED(PIN_LED_R, PIN_LED_G, PIN_LED_B)
 
     def get_air_temp(self):
-        return self.__temp_air.get_temp()
+        return self.__temp_air.get_ui_temp()
 
     def get_water_temp(self):
         return 70.1  # self.__temp_teapot.get_temp()
