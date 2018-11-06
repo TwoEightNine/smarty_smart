@@ -178,11 +178,12 @@ def execute():
     if feat is None:
         abort(400)
     params = []
-    for param in feat.params:
-        if param not in data:
-            abort(400)
-        else:
-            params.append(data[param])
+    if feat.params is not None:
+        for param in feat.params:
+            if param not in data:
+                abort(400)
+            else:
+                params.append(data[param])
     if feat.action == feature.Action.LIGHT:
         ctrl.toggle_light()
     elif feat.action == feature.Action.RGB:

@@ -66,6 +66,6 @@ def build_features(ctrl):
 
 def get_feature(action, features):
     for feature in features:
-        if feature.action == action:
+        if feature.action.value == action:
             return feature
     return None
