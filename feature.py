@@ -58,7 +58,7 @@ def build_features(ctrl):
             "Amplifier",
             on_off(ctrl.is_amp_on()),
             Action.AMPLIFIER,
-            thumb="https://cdn.pixabay.com/photo/2016/03/31/15/24/audio-1293262_960_720.png"
+            thumb="https://controlyourbuilding.com/media/files/blog/CSI-blog_headphones.jpg"
         )
     ]
 
