@@ -219,11 +219,10 @@ def notify_ip(ip):
 
 
 log_table()
-watcher = ipw.IPWatcher(notify_ip)
+watcher = ipw.run(notify_ip)
 
 if __name__ == "__main__":
     db.create_all()
     db.init_app(app)
     app.logger.setLevel(logging.DEBUG)
     app.run(threaded=True, host=HOST, port=PORT)
-    watcher.start()
