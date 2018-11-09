@@ -1,29 +1,63 @@
 import requests
 import json
-import thread
+import threading
 import time
+import os
 
 FILENAME = "myip"
+DELAY = 60
 
 
-def watch_ip(notify):
-    ip = ""
-    with open(FILENAME, "rb") as f:
-        ip = f.read()
-    while True:
-        try:
-            r = requests.get("https://api.ipify.org?format=json")
-            n_ip = json.loads(r.text)["ip"]
-            print("obtained", n_ip)
-            if n_ip != ip:
-                ip = n_ip
-                with open(FILENAME, "wb") as f:
-                    f.write(ip)
-                notify(ip)
-            time.sleep(60)
-        except Exception as e:
-            print("IP Watcher:", e)
+class IPWatcher(threading.Thread):
+    cancel_flag = False
+    notify = None
+
+    def __init__(self, notify):
+        threading.Thread.__init__(self)
+        self.notify = notify
+
+    def run(self):
+        print("Starting " + self.name)
+        self.watch_ip()
+        print("Exiting " + self.name)
+
+    def stop(self):
+        self.cancel_flag = True
+
+    def watch_ip(self):
+        ip = ""
+        if os.path.isfile(FILENAME):
+            with open(FILENAME, "rb") as f:
+                ip = f.read().decode()
+        else:
+            with open(FILENAME, "wb") as f:
+                f.write(bytes("".encode("utf-8")))
+        while not self.cancel_flag:
+            try:
+                r = requests.get("https://api.ipify.org?format=json")
+                n_ip = json.loads(r.text)["ip"]
+                print("obtained", n_ip)
+                if n_ip != ip:
+                    ip = n_ip
+                    with open(FILENAME, "wb") as f:
+                        f.write(bytes(ip.encode("utf-8")))
+                    self.notify(ip)
+                time.sleep(DELAY)
+            except Exception as e:
+                print("IP Watcher:", e)
 
 
 def run(notify):
-    thread.start_new_thread(watch_ip, (notify,))
+    thread = IPWatcher(notify)
+    thread.start()
+    return thread
+
+
+def notify_test(ip):
+    print("notify_test", ip)
+
+
+if __name__ == "__main__":
+    t = run(notify_test)
+    time.sleep(2 * DELAY)
+    t.stop()
