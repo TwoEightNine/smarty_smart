@@ -1,14 +1,14 @@
-from flask import Flask, request, abort, send_file
+from flask import Flask, request, abort
 from flask_sqlalchemy import SQLAlchemy
 import utils
 import json
 import logging
 import os
 import cry
-import actions
 import controller
 import fcm
 import feature
+import ipwatcher as ipw
 from keys import *
 
 PUSH_TITLE = "says Smarty"
@@ -214,7 +214,12 @@ def execute_test():
     push.send_message(PUSH_TITLE, "Test message " + utils.get_ui_time(utils.get_time()))
 
 
+def notify_ip(ip):
+    push.send_message(PUSH_TITLE, "IP has changed", {"ip": ip})
+
+
 log_table()
+watcher = ipw.run(notify_ip)
 
 if __name__ == "__main__":
     db.create_all()
