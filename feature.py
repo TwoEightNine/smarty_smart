@@ -50,8 +50,9 @@ def build_features(ctrl):
         ),
         Feature(
             "RGB",
-            on_off(ctrl.is_rgb_on()),
+            ctrl.get_led_color(),
             Action.RGB,
+            ['color'],
             thumb="https://sep.yimg.com/ay/yhst-135552442550403/24v-rgb-led-polar-2-neon-flex-65-1.jpg"
         ),
         Feature(

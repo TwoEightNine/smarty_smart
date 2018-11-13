@@ -5,18 +5,17 @@ import ds18b20
 
 PIN_TEAPOT = 6
 PIN_LIGHT = 14
-PIN_RGB = 18
 PIN_AMP = 23
-PIN_LED_R = 13
-PIN_LED_G = 7
-PIN_LED_B = 15
+
+PIN_LED_R = 12
+PIN_LED_G = 16
+PIN_LED_B = 20
 
 
 class Controller:
 
     __teapot = None
     __light = None
-    __rgb = None
     __amp = None
     __temp_teapot = None
     __temp_air = None
@@ -25,9 +24,8 @@ class Controller:
     def __init__(self):
         self.__teapot = DigitalOutputDevice(PIN_TEAPOT, active_high=False)
         self.__light = DigitalOutputDevice(PIN_LIGHT, active_high=False)
-        self.__rgb = DigitalOutputDevice(PIN_RGB, active_high=False)
         self.__amp = DigitalOutputDevice(PIN_AMP, active_high=False)
-        # self.__temp_teapot = ds18b20.DS18B20()
+
         self.__temp_air = ds18b20.DS18B20()
         self.__led = RGBLED(PIN_LED_R, PIN_LED_G, PIN_LED_B)
 
@@ -46,9 +44,6 @@ class Controller:
     def is_light_on(self):
         return self.__light.value
 
-    def is_rgb_on(self):
-        return self.__rgb.value
-
     def is_amp_on(self):
         return self.__amp.value
 
@@ -61,9 +56,9 @@ class Controller:
 
     def get_led_color(self):
         color = self.__led.value
-        return hex(int(color[0] * 255))[2:] \
-               + hex(int(color[1] * 255))[2:] \
-               + hex(int(color[2] * 255))[2:]
+        return hex(int(color[0] * 255))[2:].zfill(2) \
+               + hex(int(color[1] * 255))[2:].zfill(2) \
+               + hex(int(color[2] * 255))[2:].zfill(2)
 
     def turn_on_teapot(self, on_boil):
         self.__teapot.on()
@@ -71,9 +66,6 @@ class Controller:
 
     def toggle_light(self):
         self.__light.toggle()
-
-    def toggle_rgb(self):
-        self.__rgb.toggle()
 
     def toggle_amp(self):
         self.__amp.toggle()
