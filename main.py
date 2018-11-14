@@ -199,7 +199,7 @@ def execute():
     if feat.action == feature.Action.LIGHT:
         ctrl.toggle_light()
     elif feat.action == feature.Action.RGB:
-        ctrl.toggle_rgb()
+        ctrl.set_led(params[0])
     elif feat.action == feature.Action.AMPLIFIER:
         ctrl.toggle_amp()
     return utils.RESPONSE_1
