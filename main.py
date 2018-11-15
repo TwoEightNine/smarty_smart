@@ -145,6 +145,18 @@ def error_handler(e):
     return utils.get_error_by_code(code)
 
 
+@app.route("/")
+def index():
+    save_event("/", 0)
+    abort(400)
+
+
+@app.route("/<path>")
+def one_path(path):
+    save_event('/' + path, 0)
+    abort(400)
+
+
 @app.route("/getSeed")
 def get_seed():
     save_event('getSeed', 1)
