@@ -3,6 +3,7 @@ import json
 import threading
 import time
 import os
+import fucking_dom_ru
 
 FILENAME = "myip"
 DELAY = 60
@@ -34,8 +35,7 @@ class IPWatcher(threading.Thread):
                 f.write(bytes("".encode("utf-8")))
         while not self.cancel_flag:
             try:
-                r = requests.get("https://api.ipify.org?format=json")
-                n_ip = json.loads(r.text)["ip"]
+                n_ip = fucking_dom_ru.get_fucking_dom_ru_ip()
                 print("obtained", n_ip)
                 if n_ip != ip:
                     ip = n_ip
