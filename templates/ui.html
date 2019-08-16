@@ -3,64 +3,73 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <head>
-<style>
-.container {
+    <style>
+.grid-rgb {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin-top: 15px;
 }
 .text {
-    margin: 6px 31px;
+    margin: 6px 20px;
     text-align: left;
     width: 100%;
-    max-width: 400px;
-    color:#fff;
+    max-width: 800px;
+    color:#ddd;
     font-family:arial, Helvetica, sans-serif;
-    font-size:19px;
+    font-size:36px;
     display:inline-block;
 }
 .button {
     width: 100%;
-    max-width: 500px;
-    margin: 8px;
+    max-width: 800px;
+    margin: 6px;
     background-color:transparent;
-    -moz-border-radius:9px;
-    -webkit-border-radius:9px;
-    border-radius:9px;
+    -moz-border-radius:14px;
+    -webkit-border-radius:14px;
+    border-radius:14px;
     border:1px solid #fff;
     display:inline-block;
     cursor:pointer;
     color:#fff;
-    font-family:arial, Helvetica, sans-serif;
-    font-size:19px;
-    font-weight:bold;
-    padding:16px 31px;
+    font-family:arial, Helvetica, sans-serif, light;
+    font-size:36px;
+    padding:22px 31px;
     text-decoration:none;
     text-shadow:0px 0px 0px #707070;
     opacity: 0.9;
 }
+.button:hover {
+    background-color:#27272f;
+}
 
-</style>
+
+    </style>
 </head>
 <body style="text-align: center; background: #17171f">
 
 <div class="container">
     <div>
 
-        <p class="text">temp: <strong>{{ controller.get_air_temp() }}</strong></p>
-        <p class="text">rgb: <strong>#{{ controller.get_led_color() }}</strong> <strong style="color: #{{ controller.get_led_color() }}">███</strong></p>
-        <p class="text">light: <strong>{{ "on" if controller.is_light_on() else "off" }}</strong></p>
-        <p class="text">amp: <strong>{{ "on" if controller.is_amp_on() else "off" }}</strong></p>
+        <div style="width: 800px; display: inline-block">
+            <p class="text">temp: <strong style="color: #fff">{{ controller.get_air_temp() }} °C</strong></p>
+            <p class="text">rgb: <strong style="color: #fff">#{{ controller.get_led_color() }}</strong> <strong
+                    style="color: #{{ controller.get_led_color() }}">███</strong></p>
+            <p class="text">light: <strong style="color: #fff">{{ "on" if controller.is_light_on() else "off"
+                }}</strong></p>
+            <p class="text">amp: <strong style="color: #fff">{{ "on" if controller.is_amp_on() else "off" }}</strong>
+            </p>
+        </div>
 
         <form action="light" method="post">
-            <input class="button" type="submit" name="light" value="light" />
+            <input class="button" type="submit" name="light" value="light"/>
         </form>
 
         <form action="amp" method="post">
-            <input class="button" type="submit" name="amp" value="amplifier" />
+            <input class="button" type="submit" name="amp" value="amplifier"/>
         </form>
 
-        <form action="rgb" method="post">
-            <input class="button" type="submit" name="rgb" value="rgb" />
+        <form action="colors" method="get">
+            <input class="button" type="submit" value="rgb"/>
         </form>
     </div>
 </div>

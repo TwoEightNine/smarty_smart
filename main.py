@@ -7,6 +7,7 @@ import os
 import cry
 import controller
 import feature
+import colors
 from keys import *
 
 PUSH_TITLE = "says Smarty"
@@ -224,6 +225,11 @@ def ui():
     return render_template('ui.html', controller=ctrl)
 
 
+@app.route("/colors")
+def colors_list():
+    return render_template('rgb.html', colors=colors.create_colors())
+
+
 @app.route("/light", methods=["POST"])
 def light():
     ctrl.toggle_light()
@@ -238,8 +244,8 @@ def amp():
 
 @app.route("/rgb", methods=["POST"])
 def rgb():
-    ctrl.set_led("133756")
-    return redirect(url_for('ui'))
+    ctrl.set_led(request.form['rgb'])
+    return redirect(url_for('colors_list'))
 
 
 log_table()
