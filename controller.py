@@ -88,6 +88,7 @@ class Controller:
 #     __led = "8d31a8"
 #     __tea = False
 #     __light = False
+#     __amp = False
 #
 #     def __init__(self):
 #         pass
@@ -113,9 +114,15 @@ class Controller:
 #     def get_led_color(self):
 #         return self.__led
 #
+#     def toggle_amp(self):
+#         self.__amp = not self.__amp
+#
+#     def is_amp_on(self):
+#         return self.__amp
+#
 #     def turn_on_teapot(self, on_boil):
 #         self.__tea = True
-#         threading.Thread(target=self.__boiling, args=(on_boil, )).start()
+#         threading.Thread(target=self.__boiling, args=(on_boil,)).start()
 #
 #     def toggle_light(self):
 #         self.__light = not self.__light

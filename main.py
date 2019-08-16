@@ -1,4 +1,4 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 import utils
 import json
@@ -6,9 +6,7 @@ import logging
 import os
 import cry
 import controller
-import fcm
 import feature
-import ipwatcher as ipw
 from keys import *
 
 PUSH_TITLE = "says Smarty"
@@ -22,7 +20,6 @@ app.config.from_pyfile('app.cfg')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 db = SQLAlchemy(app)
 ctrl = controller.Controller()
-push = fcm.FCM()
 
 
 class SeedStorage(db.Model):
@@ -218,20 +215,34 @@ def register_token():
     if FCM_TOKEN not in request.form:
         abort(400)
     fcm_token = request.form[FCM_TOKEN]
-    push.add_token(fcm_token)
+    # push.add_token(fcm_token)
     return utils.RESPONSE_1
 
 
-def execute_test():
-    push.send_message(PUSH_TITLE, "Test message " + utils.get_ui_time(utils.get_time()))
+@app.route("/ui")
+def ui():
+    return render_template('ui.html', controller=ctrl)
 
 
-def notify_ip(ip):
-    push.send_message(PUSH_TITLE, "IP has changed", {"ip": ip})
+@app.route("/light", methods=["POST"])
+def light():
+    ctrl.toggle_light()
+    return redirect(url_for('ui'))
+
+
+@app.route("/amp", methods=["POST"])
+def amp():
+    ctrl.toggle_amp()
+    return redirect(url_for('ui'))
+
+
+@app.route("/rgb", methods=["POST"])
+def rgb():
+    ctrl.set_led("133756")
+    return redirect(url_for('ui'))
 
 
 log_table()
-watcher = ipw.run(notify_ip)
 
 if __name__ == "__main__":
     db.create_all()

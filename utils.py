@@ -5,7 +5,7 @@ import hashlib
 import json
 import re
 
-SEED_EXPIRATION_TIME = 3600 * 24
+SEED_EXPIRATION_TIME = 3600 * 24 * 30  # month
 
 ERROR_FORMAT = '{"error": %d, "message": "%s"}'
 RESPONSE_FORMAT = '{"result": %s}'
