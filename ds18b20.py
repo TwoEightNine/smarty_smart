@@ -12,14 +12,10 @@ class DS18B20:
         os.system('modprobe w1-therm')
 
         base_dir = '/sys/bus/w1/devices/'
-        search = glob.glob(base_dir + '28*')
-        if len(search) != 0:
-            device_folder = search[0]
-            self.__device_file = device_folder + '/w1_slave'
+        device_folder = glob.glob(base_dir + '28*')[0]
+        self.__device_file = device_folder + '/w1_slave'
 
     def _read_temp_raw(self):
-        if self.__device_file == "": 
-            return ""
         f = open(self.__device_file, 'r')
         lines = f.readlines()
         f.close()
@@ -27,8 +23,6 @@ class DS18B20:
 
     def get_temp(self):
         lines = self._read_temp_raw()
-        if lines == "":
-            return 99.9
         while lines[0].strip()[-3:] != 'YES':
             time.sleep(0.2)
             lines = self._read_temp_raw()
