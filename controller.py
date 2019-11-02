@@ -48,11 +48,25 @@ class Controller:
         return self.__amp.value
 
     def set_led(self, color):
-        self.__led.color = (
-            int(color[:2], 16) / 255.0,
-            int(color[2:4], 16) / 255.0,
-            int(color[4:], 16) / 255.0
-        )
+        curr_color = self.__led.value
+        curr_r = curr_color[0]
+        curr_g = curr_color[1]
+        curr_b = curr_color[2]
+
+        needed_r = int(color[:2], 16) / 255.0
+        needed_g = int(color[2:4], 16) / 255.0
+        needed_b = int(color[2:4], 16) / 255.0
+
+        duration = 3000  # ms
+        steps = int(60 * duration / 1000)
+        for i in range(steps + 1):
+            x = i / steps
+            self.__led.color = (
+                (needed_r - curr_r) * x + curr_r,
+                (needed_g - curr_g) * x + curr_g,
+                (needed_b - curr_b) * x + curr_b,
+            )
+            utils.sleep(.016)
 
     def get_led_color(self):
         color = self.__led.value
