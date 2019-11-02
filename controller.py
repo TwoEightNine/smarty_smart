@@ -52,10 +52,12 @@ class Controller:
         curr_r = curr_color[0]
         curr_g = curr_color[1]
         curr_b = curr_color[2]
+        # print('curr =', curr_r, curr_g, curr_b)
 
         needed_r = int(color[:2], 16) / 255.0
         needed_g = int(color[2:4], 16) / 255.0
-        needed_b = int(color[2:4], 16) / 255.0
+        needed_b = int(color[4:], 16) / 255.0
+        # print('needed =', needed_r, needed_g, needed_b)
 
         duration = 3000  # ms
         steps = int(60 * duration / 1000)
