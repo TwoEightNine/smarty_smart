@@ -49,13 +49,13 @@ border:0px solid #fff;
 
 #picker {
     display: table-cell;
-    height: 500px;
+    height: 900px;
     width: 90%;
 }
 
 #slide {
     display: table-cell;
-    height: 500px;
+    height: 900px;
     width: 10%;
 }
 
@@ -84,6 +84,12 @@ border:0px solid #fff;
     <div class="Row">
         <div id="picker"></div>
         <div id="slide"></div>
+    </div>
+
+    <div>
+        <form action="/rgb" method="post">
+            <button class="button" type="submit" name="rgb" value="000000">off</button>
+        </form>
     </div>
 </div>
 
