@@ -3,7 +3,7 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <title>Smarty smart</title>
-<script src="{{ url_for('static', filename='vanilla-picker.js') }}"></script>
+<script src="{{ url_for('static', filename='colorpicker.min.js') }}"></script>
 <head>
     <style>
 .grid-rgb {
@@ -47,7 +47,28 @@ border:0px solid #fff;
     display: none;
 }
 
+#picker {
+    display: table-cell;
+    height: 500px;
+    width: 90%;
+}
 
+#slide {
+    display: table-cell;
+    height: 500px;
+    width: 10%;
+}
+
+.Row {
+    display: table;
+    width: 100%; /*Optional*/
+    max-width: 800px;
+    margin-top: 32px;
+    margin-left: auto;
+    margin-right: auto;
+    table-layout: fixed; /*Optional*/
+    border-spacing: 10px; /*Optional*/
+}
 
     </style>
 </head>
@@ -59,11 +80,15 @@ border:0px solid #fff;
             <input class="button" type="submit" value="back"/>
         </form>
     </div>
+
+    <div class="Row">
+        <div id="picker"></div>
+        <div id="slide"></div>
+    </div>
 </div>
 
-<div id="main-color"></div>
 
-<script>
+<script type="text/javascript">
         var parentMain = document.querySelector('#main-color');
 
         // Returns a function, that, as long as it continues to be invoked, will not
@@ -86,7 +111,7 @@ border:0px solid #fff;
         };
 
         async function updateBackground(color) {
-            var rgbColor = color.hex.substring(1, 7);
+            var rgbColor = color.substring(1);
             var data = new URLSearchParams();
             data.append('rgb', rgbColor);
             await fetch('{{ url_for('rgb') }}', {
@@ -100,20 +125,13 @@ border:0px solid #fff;
 
         var debouncedUpdateBackground = debounce(updateBackground, 500);
 
-        new Picker({
-            parent: parentMain,
-            popup: false,
-            alpha: false,
-            editor: false,
-            color: '#{{ controller.get_led_color() }}',
-            onChange: function(color) {
-                debouncedUpdateBackground(color);
-            },
-        });
-
-
+        ColorPicker(
+            document.getElementById('slide'),
+            document.getElementById('picker'),
+            function(hex, hsv, rgb) {
+                  debouncedUpdateBackground(hex);
+            });
 </script>
-
 
 </body>
 </html>
