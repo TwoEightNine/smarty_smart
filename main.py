@@ -44,7 +44,7 @@ def one_path(path):
 
 @app.route("/colors")
 def colors_list():
-    return render_template('rgb.html', colors=colors.create_colors())
+    return render_template('rgb.html', controller=ctrl)
 
 
 @app.route("/light", methods=["POST"])

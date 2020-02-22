@@ -3,6 +3,7 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <title>Smarty smart</title>
+<script src="{{ url_for('static', filename='vanilla-picker.js') }}"></script>
 <head>
     <style>
 .grid-rgb {
@@ -39,6 +40,14 @@ border:0px solid #fff;
     background-color:#27272f;
 }
 
+#main-color {
+    display: inline-block;
+}
+#main-color .picker_sample, #main-color .picker_done {
+    display: none;
+}
+
+
 
     </style>
 </head>
@@ -52,13 +61,58 @@ border:0px solid #fff;
     </div>
 </div>
 
-<div class="grid-rgb">
-    {% for color in colors %}
-    <form action="rgb" method="post">
-        <input class="color-item" style="background-color: #{{ color }}" type="submit" name="rgb" value="{{ color }}"/>
-    </form>
-    {% endfor %}
-</div>
+<div id="main-color"></div>
+
+<script>
+        var parentMain = document.querySelector('#main-color');
+
+        // Returns a function, that, as long as it continues to be invoked, will not
+        // be triggered. The function will be called after it stops being called for
+        // N milliseconds. If `immediate` is passed, trigger the function on the
+        // leading edge, instead of the trailing.
+        function debounce(func, wait, immediate) {
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
+        };
+
+        async function updateBackground(color) {
+            var rgbColor = color.hex.substring(1, 7);
+            var data = new URLSearchParams();
+            data.append('rgb', rgbColor);
+            await fetch('{{ url_for('rgb') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+                },
+                body: data
+            })
+        }
+
+        var debouncedUpdateBackground = debounce(updateBackground, 500);
+
+        new Picker({
+            parent: parentMain,
+            popup: false,
+            alpha: false,
+            editor: false,
+            color: '#{{ controller.get_led_color() }}',
+            onChange: function(color) {
+                debouncedUpdateBackground(color);
+            },
+        });
+
+
+</script>
 
 
 </body>
