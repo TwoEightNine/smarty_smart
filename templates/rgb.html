@@ -3,7 +3,6 @@
 
 <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <title>Smarty smart</title>
-<script src="{{ url_for('static', filename='colorpicker.min.js') }}"></script>
 <head>
     <style>
 .grid-rgb {
@@ -40,35 +39,6 @@ border:0px solid #fff;
     background-color:#27272f;
 }
 
-#main-color {
-    display: inline-block;
-}
-#main-color .picker_sample, #main-color .picker_done {
-    display: none;
-}
-
-#picker {
-    display: table-cell;
-    height: 900px;
-    width: 90%;
-}
-
-#slide {
-    display: table-cell;
-    height: 900px;
-    width: 10%;
-}
-
-.Row {
-    display: table;
-    width: 100%; /*Optional*/
-    max-width: 800px;
-    margin-top: 32px;
-    margin-left: auto;
-    margin-right: auto;
-    table-layout: fixed; /*Optional*/
-    border-spacing: 10px; /*Optional*/
-}
 
     </style>
 </head>
@@ -80,64 +50,16 @@ border:0px solid #fff;
             <input class="button" type="submit" value="back"/>
         </form>
     </div>
-
-    <div class="Row">
-        <div id="picker"></div>
-        <div id="slide"></div>
-    </div>
-
-    <div>
-        <form action="/rgb" method="post">
-            <button class="button" type="submit" name="rgb" value="000000">off</button>
-        </form>
-    </div>
 </div>
 
+<div class="grid-rgb">
+    {% for color in colors %}
+    <form action="rgb" method="post">
+        <input class="color-item" style="background-color: #{{ color }}" type="submit" name="rgb" value="{{ color }}"/>
+    </form>
+    {% endfor %}
+</div>
 
-<script type="text/javascript">
-        var parentMain = document.querySelector('#main-color');
-
-        // Returns a function, that, as long as it continues to be invoked, will not
-        // be triggered. The function will be called after it stops being called for
-        // N milliseconds. If `immediate` is passed, trigger the function on the
-        // leading edge, instead of the trailing.
-        function debounce(func, wait, immediate) {
-            var timeout;
-            return function() {
-                var context = this, args = arguments;
-                var later = function() {
-                    timeout = null;
-                    if (!immediate) func.apply(context, args);
-                };
-                var callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(context, args);
-            };
-        };
-
-        async function updateBackground(color) {
-            var rgbColor = color.substring(1);
-            var data = new URLSearchParams();
-            data.append('rgb', rgbColor);
-            await fetch('{{ url_for('rgb') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-                },
-                body: data
-            })
-        }
-
-        var debouncedUpdateBackground = debounce(updateBackground, 500);
-
-        ColorPicker(
-            document.getElementById('slide'),
-            document.getElementById('picker'),
-            function(hex, hsv, rgb) {
-                  debouncedUpdateBackground(hex);
-            });
-</script>
 
 </body>
 </html>
