@@ -1,16 +1,13 @@
 from flask import Flask, request, abort, render_template, redirect, url_for
 import utils
 import logging
-import controller
+from src.controller import *
 import colors
-
-PUSH_TITLE = "says Smarty"
-HOST = '0.0.0.0'
-PORT = 1753
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-ctrl = controller.Controller()
+
+ctrl: Controller = StubController()  # GpioController()
 
 
 @app.errorhandler(Exception)
@@ -34,7 +31,7 @@ def error_handler(e):
 
 @app.route("/")
 def index():
-    return render_template('ui.html', controller=ctrl)
+    return render_template('ui.html', controller=ctrl, colors=colors.create_colors())
 
 
 @app.route("/<path>")
@@ -42,29 +39,12 @@ def one_path(path):
     abort(400)
 
 
-@app.route("/colors")
-def colors_list():
-    return render_template('rgb.html', colors=colors.create_colors())
-
-
-@app.route("/light", methods=["POST"])
-def light():
-    ctrl.toggle_light()
-    return redirect(url_for('index'))
-
-
-@app.route("/amp", methods=["POST"])
-def amp():
-    ctrl.toggle_amp()
-    return redirect(url_for('index'))
-
-
 @app.route("/rgb", methods=["POST"])
 def rgb():
-    ctrl.set_led(request.form['rgb'])
-    return redirect(url_for('colors_list'))
+    ctrl.set_led_color(request.form['rgb'])
+    return redirect(url_for('index'))
 
 
 if __name__ == "__main__":
     app.logger.setLevel(logging.DEBUG)
-    app.run(threaded=True, host=HOST, port=PORT)
+    app.run(threaded=True, host='0.0.0.0', port=1753)
