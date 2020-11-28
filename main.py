@@ -1,4 +1,5 @@
 from flask import Flask, request, abort, render_template, redirect, url_for
+from flask_cors import CORS
 import utils
 import logging
 from src.controller import *
@@ -7,6 +8,7 @@ import json
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
+CORS(app)
 
 ctrl: Controller = GpioController()
 
