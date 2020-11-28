@@ -3,11 +3,19 @@ import utils
 import logging
 from src.controller import *
 import colors
+import json
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
 
-ctrl: Controller = StubController()  # GpioController()
+ctrl: Controller = GpioController()
+
+
+def __create_state():
+    return json.dumps({
+        'temp': ctrl.get_temp(),
+        'led_color': ctrl.get_led_color()
+    })
 
 
 @app.errorhandler(Exception)
@@ -43,6 +51,21 @@ def one_path(path):
 def rgb():
     ctrl.set_led_color(request.form['rgb'])
     return redirect(url_for('index'))
+
+
+@app.route('/api/state', methods=['GET'])
+def api_state():
+    return __create_state()
+
+
+@app.route('/api/led_color', methods=['GET'])
+def api_rgb():
+    led_color = request.args.get('color')
+    if led_color is None or len(led_color) != 6:
+        abort(400)
+
+    ctrl.set_led_color(led_color)
+    return __create_state()
 
 
 if __name__ == "__main__":
