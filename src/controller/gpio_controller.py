@@ -1,4 +1,5 @@
 from src.controller import Controller
+import threading
 import utils
 import ds18b20
 
@@ -21,7 +22,6 @@ except Exception as e:
 
 
 class GpioController(Controller):
-
     # __teapot = None
     # __light = None
     # __amp = None
@@ -48,21 +48,44 @@ class GpioController(Controller):
 
     def set_led_color(self, color: str):
         curr_color = self.__led.value
-        curr_r = curr_color[0]
-        curr_g = curr_color[1]
-        curr_b = curr_color[2]
+        needed_color = (
+            int(color[:2], 16) / 255.0,
+            int(color[2:4], 16) / 255.0,
+            int(color[4:], 16) / 255.0
+        )
+        led_thread = self.SmoothLedThread(curr_color, needed_color, self.__led)
+        led_thread.start()
 
-        needed_r = int(color[:2], 16) / 255.0
-        needed_g = int(color[2:4], 16) / 255.0
-        needed_b = int(color[4:], 16) / 255.0
+    class SmoothLedThread(threading.Thread):
 
-        duration = 500  # ms
-        steps = int(60 * duration / 1000)
-        for i in range(steps + 1):
-            x = i / steps
-            self.__led.color = (
-                (needed_r - curr_r) * x + curr_r,
-                (needed_g - curr_g) * x + curr_g,
-                (needed_b - curr_b) * x + curr_b,
-            )
-            utils.sleep(.016)
+        _anim_duration_s = 0.5
+        _fps = 60
+
+        _from_color = None
+        _to_color = None
+        _led = None
+
+        def __init__(self, from_color, to_color, led):
+            threading.Thread.__init__(self)
+            self._from_color = from_color
+            self._to_color = to_color
+            self._led = led
+
+        def run(self):
+            curr_r = self._from_color[0]
+            curr_g = self._from_color[1]
+            curr_b = self._from_color[2]
+
+            needed_r = self._to_color[0]
+            needed_g = self._to_color[1]
+            needed_b = self._to_color[2]
+
+            steps = int(self._fps * self._anim_duration_s)
+            for i in range(steps + 1):
+                x = i / steps
+                self._led.color = (
+                    (needed_r - curr_r) * x + curr_r,
+                    (needed_g - curr_g) * x + curr_g,
+                    (needed_b - curr_b) * x + curr_b,
+                )
+                utils.sleep(1 / self._fps)
