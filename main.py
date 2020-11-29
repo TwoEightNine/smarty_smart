@@ -8,7 +8,7 @@ import json
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
-# CORS(app)
+CORS(app)
 
 ctrl: Controller = GpioController()
 
